@@ -37,6 +37,17 @@ const MyWeb3 ={
                         //获取到当前默认的以太坊地址
                         window.defaultAccount = accounts[0].toLowerCase()
                         //that.allEvents(window.MyContract)
+                        window.MyContract.events.allEvents({fromBlock: 0, toBlock: 'latest'}, function(error, event){
+                            console.log({allEvents:event})
+                        }).on("connected", function(subscriptionId){
+                           console.log({connected_subscriptionId:subscriptionId})
+                        }).on('data', function(event){
+                           console.log({event_data:event})
+                        }).on('changed', function(event){
+                            console.log({event_changed:event})
+                        }).on('error', function(error, receipt) { 
+                            console.log({event_error:error,receipt:receipt})
+                        })
                         resolve(true)
                     }else{
                         reject('Unknow Your ChainId:'+currentChainId)
