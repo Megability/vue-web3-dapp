@@ -30,35 +30,21 @@ export default {
   created() {
 
   },
-  mounted() {
-    let that = this
-    let ethereum = window.ethereum
-    if (typeof  ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
-        MyWeb3.init().then(function(res){
-          console.log(res)
-          that.candidates()
-        })
-    }else {
-        alert('You have to install MetaMask !')
-    }
+  async mounted() {
+    await MyWeb3.init()
+    await this.candidates()
   },
   methods:{
-    candidates(){
-        let that = this
-        MyWeb3.getCandidateCount().then(function(count){
-            if(count > 0){
-                for(let i=0;i<count;i++){
-                    MyWeb3.getCandidates(i).then(function (result) {
-                        let result2 = result
-                        MyWeb3.candidateVoteTimes(i).then(function (times) {
-                          result2.times = times
-                          that.candidatess.push(result2);
-                        })
-                    })
-                }
-                //console.log(that.candidatess)
-            }
-        })
+    async candidates(){
+      let count = await MyWeb3.getCandidateCount()
+      if(count > 0){
+          for(let i=0;i<count;i++){
+            let result2 = await MyWeb3.getCandidates(i)
+            result2.times = await MyWeb3.candidateVoteTimes(i)
+            this.candidatess.push(result2)
+          }
+          //console.log(that.candidatess)
+      }
     },
     vote(){
       //let that = this
